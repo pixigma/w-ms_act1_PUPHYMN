@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<head>
+    <title>PUP HYMN</title>
+    <link rel="icon" type="image/png" href="PUP.png"> 
+    <style>
+        body {
+            background-color: #800000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 {
+            margin-top: 20px;
+            color: #FFD700;
+        }
+
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .lyrics-container {
+            height: 250px;
+            overflow-y: hidden;
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 50%;
+            background-color: #3b0000;
+            padding: 10px;
+            position: relative;
+            color: #FFD700;
+        }
+
+        .lyrics-content {
+            position: relative;
+            font-size: 20px;
+            line-height: 2.2;
+            white-space: pre-line;
+            transition: transform 0.2s linear;
+        }
+
+        .audio-container {
+            padding: 10px;
+            display: inline-block;
+            border-radius: 10px;
+        }
+
+        audio {
+            width: 300px;
+            filter: invert(14%) sepia(87%) saturate(749%) hue-rotate(358deg) brightness(105%) contrast(104%);
+        }
+
+        audio::-webkit-media-controls-panel {
+            background-color: #FFD700 !important; 
+        }
+
+        audio::-webkit-media-controls-timeline {
+            color: #800000 !important; 
+        }
+
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: #800000 !important; 
+        }
+    </style>
+</head>
+<body>
+    <img src="PUP.png" alt="PUP Logo" class="logo">
+    <h1>PUP HYMN</h1>
+    <div class="lyrics-container">
+        <div class="lyrics-content" id="lyricsContent">
+            Sintang Paaralan
+            Tanglaw ka ng bayan
+            Pandayan ng isip ng kabataan
+            Kami ay dumating nang salat sa yaman
+            Hanap na dunong ay iyong alay
+            Ang layunin mong makatao
+            Dinarangal ang Pilipino
+            Ang iyong aral, diwa, adhikang taglay
+            PUP, aming gabay
+            Paaralang dakila
+            PUP, pinagpala
+            Gagamitin ang karunungan
+            Mula sa iyo, para sa bayan
+            Ang iyong aral, diwa, adhikang taglay
+            PUP, aming gabay
+            Paaralang dakila
+            PUP, pinagpala
+        </div>
+    </div>
+    <div class="audio-container">
+        <audio id="audio" controls autoplay>
+            <source src="Imno_ng_PUP.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const lyricsContent = document.getElementById('lyricsContent');
+        const lyricsContainer = document.querySelector('.lyrics-container');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            audio.play().catch(() => {
+                console.log("Autoplay blocked. Waiting for user interaction.");
+                document.body.addEventListener('click', () => {
+                    audio.play();
+                }, { once: true });
+            });
+        });
+
+        function syncLyrics() {
+            const lyricsStartTime = 11;
+            const lyricsEndTime = 100; 
+            const totalHeight = lyricsContent.scrollHeight - lyricsContainer.clientHeight;
+
+            if (audio.currentTime < lyricsStartTime) {
+                lyricsContent.style.transform = 'translateY(0px)';
+            } else if (audio.currentTime >= lyricsStartTime && audio.currentTime <= lyricsEndTime) {
+                const progress = (audio.currentTime - lyricsStartTime) / (lyricsEndTime - lyricsStartTime);
+                lyricsContent.style.transform = `translateY(${-progress * totalHeight}px)`;
+            } else {
+                lyricsContent.style.transform = `translateY(${-totalHeight}px)`;
+            }
+
+            requestAnimationFrame(syncLyrics);
+        }
+
+        audio.addEventListener('play', syncLyrics);
+        audio.addEventListener('seeked', syncLyrics);
+        audio.addEventListener('ended', () => {
+            lyricsContent.style.transform = 'translateY(0px)';
+        });
+
+    </script>
+</body>
+</html>
